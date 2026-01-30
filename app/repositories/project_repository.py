@@ -21,6 +21,6 @@ class ProjectRepository:
 
     def delete_project(self, project_id: int) -> None:
         self.projects = [
-            project_in_list for project_in_list in self.projects if project_in_list.project_id != project_id
-        ]
+            project_in_list for project_in_list in self.projects if project_in_list.project_id != project_id 
+        ] #“Create a new list, then for each project in self.projects, if its project_id is not equal to the one we want to delete, put it into that new list.”
 
