@@ -1,5 +1,5 @@
 from typing import List, Optional
-from schemas.project import ProjectOut
+from app.schemas.project import ProjectOut
 
 class ProjectRepository:
     def __init__(self):

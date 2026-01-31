@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from schemas.project import ProjectCreate, ProjectOut
-from repositories.project_repository import ProjectRepository
-from services.project_service import ProjectService
+from app.schemas.project import ProjectCreate, ProjectOut
+from app.services.project_service import ProjectService
+from app.repositories.project_repository import ProjectRepository
+
 
 router = APIRouter()
 

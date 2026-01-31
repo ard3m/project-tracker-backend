@@ -1,6 +1,6 @@
 from datetime import datetime
-from repositories.project_repository import ProjectRepository
-from schemas.project import ProjectCreate, ProjectOut
+from app.repositories.project_repository import ProjectRepository
+from app.schemas.project import ProjectCreate, ProjectOut
 
 class ProjectService:
     def __init__(self, repo: ProjectRepository):
