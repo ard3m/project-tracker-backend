@@ -1,12 +1,21 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
-
 from app.schemas.task import TaskCreate, TaskOut
-from app.schemas.history import HistoryEventOut
-from app.storage.memory import tasks, history
+from app.services.task_service import TaskService
+from app.repositories.task_repository import TaskRepository
 
-router = APIRouter(prefix="/tasks", tags=["Tasks"])
+router = APIRouter()
 
+repo = TaskRepository()
+service = TaskService(repo)
+
+@router.post("/tasks", response_model=TaskOut)
+def create_task(data: TaskCreate):
+    return service.create_task(data)
+
+@router.get("/tasks", response_model=list[TaskOut])
+def list_tasks():
+    return service.list_tasks()
 
 @router.post("/", response_model=TaskOut)
 def create_task(task: TaskCreate):

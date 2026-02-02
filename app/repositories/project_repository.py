@@ -19,8 +19,9 @@ class ProjectRepository:
         self.projects.append(project)
         return project
 
-    def delete_project(self, project_id: int) -> None:
+    def delete_project(self, project_id: int) -> bool:
+        original_len = len(self.projects)
         self.projects = [
-            project_in_list for project_in_list in self.projects if project_in_list.project_id != project_id 
-        ] #“Create a new list, then for each project in self.projects, if its project_id is not equal to the one we want to delete, put it into that new list.”
-
+            project_in_list for project_in_list in self.projects if project_in_list.project_id != project_id
+        ]
+        return len(self.projects) < original_len
