@@ -6,9 +6,6 @@ class ProjectService:
     def __init__(self, repo: ProjectRepository):
         self.repo = repo
 
-    def list_projects(self):
-        return self.repo.list_projects()
-
     def create_project(self, data: ProjectCreate) -> ProjectOut:
         project = ProjectOut(
             project_id=self.repo.next_id,
@@ -18,6 +15,9 @@ class ProjectService:
         self.repo.next_id += 1
         return self.repo.create_project(project)
 
+    def list_projects(self):
+        return self.repo.list_projects()
+
     def delete_project(self, project_id: int) -> bool:
         project = self.repo.get_project(project_id)
         if not project:
@@ -25,3 +25,5 @@ class ProjectService:
 
         self.repo.delete_project(project_id)
         return True
+
+

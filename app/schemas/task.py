@@ -3,13 +3,10 @@ from datetime import datetime
 from typing import List, Optional
 
 class TaskCreate(BaseModel):
-    project_id: int
-    title: str
-    status: str = "Pending"
+    name: str
+    task_id: int
 
 class TaskOut(BaseModel):
+    name: str
     task_id: int
-    project_id: int
-    title: str
-    status: str
-    updated_at: datetime
+    created_at: datetime

@@ -10,20 +10,8 @@ class ProjectOut(BaseModel):
     name: str
     created_at: datetime
 
-class TaskCreate(BaseModel):
-    project_id: int
-    title: str
-    status: str = "Pending"
 
-class TaskOut(BaseModel):
-    task_id: int
-    project_id: int
-    title: str
-    status: str
-    updated_at: datetime
 
-class HistoryEventOut(BaseModel):
-    history_event_id: int
-    event_type: str
-    description: str
-    timestamp: datetime
+
+
+
