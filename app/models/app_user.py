@@ -16,7 +16,6 @@ class AppUser(Base):
     password: Mapped[str] = mapped_column(String(60), nullable=False)
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-
     last_login_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default="now()")
 
-    account: Mapped["Account"] = relationship("Account", back_populates="users")
+    account: Mapped["Account"] = relationship("Account", back_populates="users") #Account in starting with capital letter is a Python model class. 

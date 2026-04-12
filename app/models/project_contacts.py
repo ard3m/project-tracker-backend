@@ -4,7 +4,7 @@ from sqlalchemy import String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.database import Base
 
-class Contacts(Base):
+class ProjectContacts(Base):
     __tablename__ = "project_contacts"
     project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id", ondelete="CASCADE"), primary_key=True)
     project_contacts_details: Mapped[str] = mapped_column(String) #TEXT, changed from  project_contact_notes

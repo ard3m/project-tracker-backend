@@ -1,29 +1,177 @@
-from datetime import datetime
-from app.repositories.project_repository import ProjectRepository
-from app.schemas.project import ProjectCreate, ProjectOut
+#project_service.py
 
-class ProjectService:
-    def __init__(self, repo: ProjectRepository):
-        self.repo = repo
+from datetime import datetime, timezone
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.models.project import Project
+from app.services.audit_log_service import write_audit_log
 
-    def create_project(self, data: ProjectCreate) -> ProjectOut:
-        project = ProjectOut(
-            project_id=self.repo.next_id,
-            name=data.name,
-            created_at=datetime.utcnow()
-        )
-        self.repo.next_id += 1
-        return self.repo.create_project(project)
+	async def create_project(
+	    db: AsyncSession,
+        project_id: int,
+        project_name: str,
+        address: str,
+        is_active: bool,
+        account_id: int,
+        user_id: int,
+	):
+	    now = datetime.now(timezone.utc)
+	    row = project(
+	        project_id=project_id,
+	        project_name=project_name,
+	        address=address,
+            is_active=is_active,
+            account_id=account_id,
+            user_id=user_id,
+	    )
+	    db.add(row)
+	    await db.commit()
+	    await db.refresh(row)
+	    await write_audit_log(
+	        db=db,
+	        entity_type="project",
+	        entity_id=row.project_id,
+	        account_id=account_id,
+	        performed_by=user_id,
+	        action="create",
+	        details={
+	            "old": None,
+	            "new": {
+	                "project_id": project_id,
+	                "project_name": project_name,
+	                "address": address,
+                    "is_active": is_active,
+                    "account_id": account_id,
+                    "user_id": user_id,
+	            },
+	        },
+	        performed_at=now,
+	    )
+	    return row
 
-    def list_projects(self):
-        return self.repo.list_projects()
 
-    def delete_project(self, project_id: int) -> bool:
-        project = self.repo.get_project(project_id)
-        if not project:
-            return False
-
-        self.repo.delete_project(project_id)
-        return True
+async def get_project(db: AsyncSession, project_id: int) -> Project | None:
+    result = await db.execute(
+        select(Project).where(Project.project_id == project_id)
+    )
+    return result.scalar_one_or_none()
 
 
+async def update_project(
+    db: AsyncSession,
+    project_id: int,
+    new_project_name: str,
+    new_address: str,
+    new_is_active: bool,
+    account_id: int,
+    user_id: int,
+):
+
+    project = await get_project(db, project_id)
+    if not project:
+        raise ValueError("Project not found")
+
+    old = {
+        "project_name": project.project_name,
+        "address": project.address,
+        "is_active": project.is_active,
+    }
+
+    now = datetime.now(timezone.utc)
+
+    project.project_name = new_project_name
+    project.address = new_address
+    project.is_active = new_is_active
+    project.updated_at = now
+    project.updated_by = user_id
+
+    await write_audit_log(
+        db=db,
+        entity_type="project",
+        entity_id=project_id,
+        account_id=account_id,
+        performed_by=user_id,
+        action="update",
+        details={
+            "old": old,
+            "new": {
+                "project_name": new_project_name,
+                "address": new_address,
+                "is_active": new_is_active,
+            },
+        },
+        performed_at=now,
+    )
+
+    await db.commit()
+    await db.refresh(project)
+
+    return project
+
+
+    	async def archive_project(
+	    db: AsyncSession,
+	    project_id: int,
+	    account_id: int,
+	    user_id: int,
+	):
+	    row = await get_project(db, project_id)
+	    if not row:
+	        raise ValueError("project not found")
+	    old = {
+	        "is_active": row.is_active,
+	    }
+	    now = datetime.now(timezone.utc)
+	    row.is_active = False
+	    row.updated_at = now
+	    row.updated_by = user_id
+	    await write_audit_log(
+	        db=db,
+	        entity_type="project",
+	        entity_id=<project_id,
+	        account_id=account_id,
+	        performed_by=user_id,
+	        action="archive",
+	        details={
+	            "old": old,
+	            "new": {"is_active": False},
+	        },
+	        performed_at=now,
+	    )
+	    await db.commit()
+	    await db.refresh(row)
+    return row
+
+
+    	async def unarchive_project(
+	    db: AsyncSession,
+	    project_id: int,
+	    account_id: int,
+	    user_id: int,
+	):
+	    row = await get_project(db, project_id)
+	    if not row:
+	        raise ValueError("project not found")
+	    old = {
+	        "is_active": row.is_active,
+	    }
+	    now = datetime.now(timezone.utc)
+	    row.is_active = True
+	    row.updated_at = now
+	    row.updated_by = user_id
+	    await write_audit_log(
+	        db=db,
+	        entity_type="project",
+	        entity_id=project_id,
+	        account_id=account_id,
+	        performed_by=user_id,
+	        action="unarchive",
+	        details={
+	            "old": old,
+	            "new": {"is_active": True},
+	        },
+	        performed_at=now,
+	    )
+	    await db.commit()
+	    await db.refresh(row)
+	    return row

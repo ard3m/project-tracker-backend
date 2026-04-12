@@ -9,7 +9,7 @@ class Project(Base):
     project_id: Mapped[int] = mapped_column(primary_key=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("account.account_id", ondelete="CASCADE"),nullable=False)
     project_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), server_default="True", nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean(), server_default="true", nullable=False)
     address: Mapped[str] = mapped_column(String(320))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default="now()", nullable=False)
     updated_by: Mapped[int] = mapped_column(ForeignKey("app_user.user_id", ondelete="RESTRICT"), nullable=False) #ondelete="RESTRICT" prevents deleting a referenced user if that user is still listed as updated_by on any project.
