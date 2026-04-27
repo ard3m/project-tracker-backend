@@ -21,7 +21,7 @@ async def get_image_attachment(
     return result.scalar_one_or_none()
 
 
-async def attach_image(
+async def attach_image( #CREATE
     db: AsyncSession,
     entity_type: str,
     entity_id: int,
@@ -148,3 +148,20 @@ async def delete_image_attachment(
     await db.commit()
 
     return True
+
+    ############################################################
+    async def list_<entity_plural>(
+    db: AsyncSession,
+    filters: dict | None = None,
+):
+    """
+    Universal LIST function.
+    Returns all <EntityModel> rows matching the optional filters.
+    """
+    query = select(<EntityModel>)
+    # Optional dynamic filters
+    if filters:
+        for field, value in filters.items():
+            query = query.where(getattr(<EntityModel>, field) == value)
+    result = await db.execute(query)
+    return result.scalars().all()

@@ -6,6 +6,42 @@ from sqlalchemy import select
 from app.models.image import Image
 from app.services.audit_log_service import write_audit_log
 
+async def create_image(
+    db: AsyncSession,
+    image_id: int,
+    file_path: str,
+    user_id: int,
+    uploaded_at: int,
+    uploaded_by: int,
+):
+    now = datetime.now(timezone.utc)
+    row = image(
+        image_id=image_id,
+        file_path=new_file_path,
+        uploaded_at=now,      
+        uploaded_by=user_id,  
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    await write_audit_log(
+        db=db,
+        entity_type="image",
+        entity_id=row.image_id,
+        performed_by=user_id,
+        action="create",
+        details={
+            "old": None,
+            "new": {
+                "image_id": image_id,
+                "file_path": file_path,
+                "uploaded_at": uploaded_at,
+                "uploaded_by": uploaded_by,
+            },
+        },
+        performed_at=now,
+    )
+    return row
 
 async def get_image(db: AsyncSession, image_id: int) -> Image | None:
     result = await db.execute(
@@ -18,7 +54,6 @@ async def update_image(
     db: AsyncSession,
     image_id: int,
     new_file_path: str,
-    account_id: int,
     user_id: int,
 ):
 
@@ -39,7 +74,6 @@ async def update_image(
         db=db,
         entity_type="image",
         entity_id=image_id,
-        account_id=account_id,
         performed_by=user_id,
         action="update",
         details={
@@ -53,3 +87,20 @@ async def update_image(
     await db.refresh(image)
 
     return image
+
+    ##################################################################
+    async def list_<entity_plural>(
+    db: AsyncSession,
+    filters: dict | None = None,
+):
+    """
+    Universal LIST function.
+    Returns all <EntityModel> rows matching the optional filters.
+    """
+    query = select(<EntityModel>)
+    # Optional dynamic filters
+    if filters:
+        for field, value in filters.items():
+            query = query.where(getattr(<EntityModel>, field) == value)
+    result = await db.execute(query)
+    return result.scalars().all()

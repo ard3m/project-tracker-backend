@@ -14,7 +14,7 @@ async def create_task(
     is_active: bool,
     updated_at: int,
     updated_by: int,
-    account_id: int,
+    account_id: int, #this is only for audit log functionality
     user_id: int,
 ):
     now = datetime.now(timezone.utc)
@@ -64,6 +64,8 @@ async def update_task(
     new_task_name: str,
     new_task_description: str,
     new_is_active: bool,
+    updated_at: int,
+    updated_by: int,
     account_id: int,
     user_id: int,
 ):
@@ -169,3 +171,20 @@ async def archive_task(
     await db.commit()
     await db.refresh(row)
     return row
+
+##############################################################################
+	async def list_tasks(
+	    db: AsyncSession,
+	    project_id: int | None = None,
+	    filters: dict | None = None,
+	):
+	    query = select(Task)
+	    # Optional account scoping
+	    if project_id is not None:
+	        query = query.where(<Task.project_id == project_id)
+	    # Optional dynamic filters
+	    if filters:
+	        for field, value in filters.items():
+	            query = query.where(getattr(Task, field) == value)
+	    result = await db.execute(query)
+	    return result.scalars().all()

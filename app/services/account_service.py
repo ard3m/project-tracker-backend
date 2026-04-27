@@ -24,7 +24,7 @@ from app.services.audit_log_service import write_audit_log
 	    await db.refresh(row)
 	    await write_audit_log(
 	        db=db,
-	        entity_type="Account",
+	        entity_type="account",
 	        entity_id=row.account_id,
 	        account_id=account_id,
 	        performed_by=user_id, #not used.

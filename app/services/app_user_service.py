@@ -186,3 +186,20 @@ async def update_last_login_time(
 	    )
 	    await db.commit()
 	    return True
+
+
+##################################################################
+async def list_users(
+    db: AsyncSession,
+    filters: dict | None = None,
+):
+  
+    query = select(app_user)
+
+    # Optional dynamic filters
+    if filters:
+        for field, value in filters.items():
+            query = query.where(getattr(account, field) == value)
+
+    result = await db.execute(query)
+    return result.scalars().all()

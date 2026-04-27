@@ -175,3 +175,20 @@ async def update_project(
 	    await db.commit()
 	    await db.refresh(row)
 	    return row
+
+###############################################################
+async def list_<entity_plural>(
+    db: AsyncSession,
+    filters: dict | None = None,
+):
+    """
+    Universal LIST function.
+    Returns all <EntityModel> rows matching the optional filters.
+    """
+    query = select(<EntityModel>)
+    # Optional dynamic filters
+    if filters:
+        for field, value in filters.items():
+            query = query.where(getattr(<EntityModel>, field) == value)
+    result = await db.execute(query)
+    return result.scalars().all()
