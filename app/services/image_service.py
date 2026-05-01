@@ -88,19 +88,16 @@ async def update_image(
 
     return image
 
-    ##################################################################
-    async def list_<entity_plural>(
+async def list_images(
     db: AsyncSession,
     filters: dict | None = None,
 ):
-    """
-    Universal LIST function.
-    Returns all <EntityModel> rows matching the optional filters.
-    """
-    query = select(<EntityModel>)
+    query = select(Image)
+
     # Optional dynamic filters
     if filters:
         for field, value in filters.items():
-            query = query.where(getattr(<EntityModel>, field) == value)
+            query = query.where(getattr(Image, field) == value)
+
     result = await db.execute(query)
     return result.scalars().all()

@@ -46,7 +46,7 @@ async def list_audit_log( #THIS WAS 'LOGS' PLURAL - give a look. should be one s
     account_id: int | None = None,
 ):
     """
-    Optional helper: list audit logs with filters.
+    this one is meant to be singular - while there is also a  'list_audit_logs' - plural.
     """
 
     query = select(AuditLog)
@@ -63,19 +63,21 @@ async def list_audit_log( #THIS WAS 'LOGS' PLURAL - give a look. should be one s
     result = await db.execute(query)
     return result.scalars().all()
 
-#####################################################################################
-async def list_<entity_plural>(
+async def list_audit_logs(
     db: AsyncSession,
+    account_id: int | None = None,
     filters: dict | None = None,
 ):
-    """
-    Universal LIST function.
-    Returns all <EntityModel> rows matching the optional filters.
-    """
-    query = select(<EntityModel>)
+    query = select(AuditLog)
+
+    # Optional account scoping
+    if account_id is not None:
+        query = query.where(AuditLog.account_id == account_id)
+
     # Optional dynamic filters
     if filters:
         for field, value in filters.items():
-            query = query.where(getattr(<EntityModel>, field) == value)
+            query = query.where(getattr(AuditLog, field) == value)
+
     result = await db.execute(query)
     return result.scalars().all()

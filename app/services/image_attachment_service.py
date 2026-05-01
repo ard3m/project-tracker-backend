@@ -149,19 +149,17 @@ async def delete_image_attachment(
 
     return True
 
-    ############################################################
-    async def list_<entity_plural>(
+
+async def list_image_attachments(
     db: AsyncSession,
     filters: dict | None = None,
 ):
-    """
-    Universal LIST function.
-    Returns all <EntityModel> rows matching the optional filters.
-    """
-    query = select(<EntityModel>)
+    query = select(ImageAttachment)
+
     # Optional dynamic filters
     if filters:
         for field, value in filters.items():
-            query = query.where(getattr(<EntityModel>, field) == value)
+            query = query.where(getattr(ImageAttachment, field) == value)
+
     result = await db.execute(query)
     return result.scalars().all()

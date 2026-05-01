@@ -15,6 +15,7 @@ from app.services.audit_log_service import write_audit_log
         last_name: str,
         account_id: int,
         last_login_time: int,
+        password_hash: str,   #new line 30/4/26
 	):
 	    now = datetime.now(timezone.utc)
 	    row = User(
@@ -25,6 +26,7 @@ from app.services.audit_log_service import write_audit_log
             last_name=last_name,
             account_id=account_id,
             last_login_time=last_login_time,
+            password=password_hash,   #new line
 	    )
 	    db.add(row)
 	    await db.commit()
@@ -186,20 +188,23 @@ async def update_last_login_time(
 	    )
 	    await db.commit()
 	    return True
+        
 
-
-##################################################################
 async def list_users(
     db: AsyncSession,
+    account_id: int | None = None,
     filters: dict | None = None,
 ):
-  
-    query = select(app_user)
+    query = select(AppUser)
+
+    # Optional account scoping
+    if account_id is not None:
+        query = query.where(AppUser.account_id == account_id)
 
     # Optional dynamic filters
     if filters:
         for field, value in filters.items():
-            query = query.where(getattr(account, field) == value)
+            query = query.where(getattr(AppUser, field) == value)
 
     result = await db.execute(query)
     return result.scalars().all()

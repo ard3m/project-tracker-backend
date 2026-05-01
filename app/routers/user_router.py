@@ -19,11 +19,15 @@ from app.services.app_user_service import (
     unarchive_user,
 )
 from app.dependencies.auth import get_current_user, get_current_account
+from passlib.context import CryptContext #new
+
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
+pwd = CryptContext(schemes=["bcrypt"], deprecated="auto") #new
 
 
+#new router.post:
 @router.post("/", response_model=AppUserResponse)
 async def create_user_endpoint(
     payload: AppUserCreate,
@@ -31,13 +35,28 @@ async def create_user_endpoint(
     user=Depends(get_current_user),
     account=Depends(get_current_account),
 ):
-    row = await create_user(
+
+    raw_password = payload.password #1. Extract raw password from payload
+
+    
+    hashed = pwd.hash(raw_password) #2. Hash it immediately
+
+    
+    row = await create_user( #3. Replace raw password with hashed password
         db=db,
         account_id=account.account_id,
         user_id_performing=user.user_id,
-        **payload.dict(),
+        password_hash=hashed,        # New line.
+        **payload.dict(exclude={"password"}),  # "DO NOT PASS RAW PASSWORD"
     )
+
     return row
+
+
+
+
+
+
 
 
 @router.get("/{user_id}", response_model=AppUserResponse)

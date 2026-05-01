@@ -176,19 +176,22 @@ async def update_project(
 	    await db.refresh(row)
 	    return row
 
-###############################################################
-async def list_<entity_plural>(
+
+async def list_projects(
     db: AsyncSession,
+    account_id: int | None = None,
     filters: dict | None = None,
 ):
-    """
-    Universal LIST function.
-    Returns all <EntityModel> rows matching the optional filters.
-    """
-    query = select(<EntityModel>)
+    query = select(Project)
+
+    # Optional account scoping
+    if account_id is not None:
+        query = query.where(Project.account_id == account_id)
+
     # Optional dynamic filters
     if filters:
         for field, value in filters.items():
-            query = query.where(getattr(<EntityModel>, field) == value)
+            query = query.where(getattr(Project, field) == value)
+
     result = await db.execute(query)
     return result.scalars().all()

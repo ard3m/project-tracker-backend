@@ -18,6 +18,7 @@ from routers.project_contacts_router import router as project_contacts_router
 from routers.image_router import router as image_router
 from routers.image_attachment_router import router as image_attachment_router
 from routers.audit_log_router import router as audit_log_router
+from routers.auth_router import router as auth_router
 
 from services.audit_log_service import write_audit_log
 
@@ -131,4 +132,4 @@ app.include_router(project_contacts_router, prefix="/project-contacts", tags=["P
 app.include_router(image_router, prefix="/images", tags=["Images"])
 app.include_router(image_attachment_router, prefix="/image-attachments", tags=["Image Attachments"])
 app.include_router(audit_log_router, prefix="/audit-logs", tags=["Audit Logs"])
-
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
