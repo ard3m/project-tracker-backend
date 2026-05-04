@@ -6,53 +6,53 @@ from sqlalchemy import select
 from app.models.user import AppUser
 from app.services.audit_log_service import write_audit_log
 
-	async def create_user(
-	    db: AsyncSession,
-	    user_id: int,
-        user_email: str,
-        username: str,
-        first_name: str,
-        last_name: str,
-        account_id: int,
-        last_login_time: int,
-        password_hash: str,   #new line 30/4/26
-	):
-	    now = datetime.now(timezone.utc)
-	    row = User(
-	        user_id=user_id,
-	        user_email=user_email,
-	        username=username,
-            first_name=first_name,
-            last_name=last_name,
-            account_id=account_id,
-            last_login_time=last_login_time,
-            password=password_hash,   #new line
+async def create_user(
+	db: AsyncSession,
+	user_id: int,
+    user_email: str,
+    username: str,
+    first_name: str,
+    last_name: str,
+    account_id: int,
+    last_login_time: int,
+    password_hash: str,   #new line 30/4/26
+):
+	now = datetime.now(timezone.utc)
+	row = User(
+	    user_id=user_id,
+	    user_email=user_email,
+	    username=username,
+        first_name=first_name,
+        last_name=last_name,
+        account_id=account_id,
+        last_login_time=last_login_time,
+        password=password_hash,   #new line
 	    )
-	    db.add(row)
-	    await db.commit()
-	    await db.refresh(row)
-	    await write_audit_log(
-	        db=db,
-	        entity_type="app_user",
-	        entity_id=row.account_id,
-	        account_id=account_id,
-	        performed_by=user_id,
-	        action="create",
-	        details={
-	            "old": None,
-	            "new": {
-	                "user_id": user_id,
-	                "user_email": user_email,
-	                "username": username,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "account_id": account_id,
-                    "last_login_time": last_login_time,
-	            },
+	db.add(row)
+	await db.commit()
+	await db.refresh(row)
+	await write_audit_log(
+	    db=db,
+	    entity_type="app_user",
+	    entity_id=row.account_id,
+	    account_id=account_id,
+	    performed_by=user_id,
+	    action="create",
+	    details={
+	        "old": None,
+	        "new": {
+	            "user_id": user_id,
+	            "user_email": user_email,
+	            "username": username,
+                "first_name": first_name,
+                "last_name": last_name,
+                "account_id": account_id,
+                "last_login_time": last_login_time,
 	        },
-	        performed_at=now,
-	    )
-    return row
+	    },
+	    performed_at=now,
+	)
+return row
 
 async def get_user(db: AsyncSession, user_id: int) -> AppUser | None:
     result = await db.execute(

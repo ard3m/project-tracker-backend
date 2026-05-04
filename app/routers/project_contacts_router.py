@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.schemas.project_contacts import (
+from app.schemas.project_contacts_schema import (
     ProjectContactsUpdate,
     ProjectContactsResponse,
 )

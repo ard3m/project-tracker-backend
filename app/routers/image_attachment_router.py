@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.schemas.image_attachment import (
+from app.schemas.image_attachment_schema import (
     ImageAttachmentCreate,
     ImageAttachmentResponse,
 )

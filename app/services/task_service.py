@@ -172,7 +172,6 @@ async def archive_task(
     await db.refresh(row)
     return row
 
-##############################################################################
 	async def list_tasks(
 	    db: AsyncSession,
 	    project_id: int | None = None,
@@ -181,7 +180,7 @@ async def archive_task(
 	    query = select(Task)
 	    # Optional account scoping
 	    if project_id is not None:
-	        query = query.where(<Task.project_id == project_id)
+	        query = query.where(Task.project_id == project_id)
 	    # Optional dynamic filters
 	    if filters:
 	        for field, value in filters.items():

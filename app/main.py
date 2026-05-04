@@ -6,21 +6,22 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from exceptions import ErrorResponse
+from app.exceptions import ErrorResponse
 
-from routers.account_router import router as account_router
-from routers.user_router import router as user_router
-from routers.project_router import router as project_router
-from routers.task_router import router as task_router
-from routers.materials_equipment_router import router as materials_equipment_router
-from routers.project_access_router import router as project_access_router
-from routers.project_contacts_router import router as project_contacts_router
-from routers.image_router import router as image_router
-from routers.image_attachment_router import router as image_attachment_router
-from routers.audit_log_router import router as audit_log_router
-from routers.auth_router import router as auth_router
+from app.routers.account_router import router as account_router
+from app.routers.user_router import router as user_router
+from app.routers.project_router import router as project_router
+from app.routers.task_router import router as task_router
+from app.routers.materials_equipment_router import router as materials_equipment_router
+from app.routers.project_access_router import router as project_access_router
+from app.routers.project_contacts_router import router as project_contacts_router
+from app.routers.image_router import router as image_router
+from app.routers.image_attachment_router import router as image_attachment_router
+from app.routers.audit_log_router import router as audit_log_router
+from app.routers.auth_router import router as auth_router
 
-from services.audit_log_service import write_audit_log
+from app.services.audit_log_service import write_audit_log
+
 
 app = FastAPI()
 

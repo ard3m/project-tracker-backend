@@ -1,44 +1,44 @@
 #account_service.py
-
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.account import Account
 from app.services.audit_log_service import write_audit_log
 
-	async def create_account(
-	    db: AsyncSession,
-        account_id: int,
-        account_name: str,
-        account_email: str,
-	    user_id: int,
-	):
-	    now = datetime.now(timezone.utc)
-	    row = Account(
-	        account_id=account_id,
-	        account_name=account_name,
-	        account_email=account_email,
-	    )
-	    db.add(row)
-	    await db.commit()
-	    await db.refresh(row)
-	    await write_audit_log(
-	        db=db,
-	        entity_type="account",
-	        entity_id=row.account_id,
-	        account_id=account_id,
-	        performed_by=user_id, #not used.
-	        action="create",
-	        details={
-	            "old": None,
-	            "new": {
-	                "account_id": account_id,
-	                "account_name": account_name,
-	                "account_email": account_email,
-	            },
+async def create_account(
+    db: AsyncSession,
+    account_id: int,
+    account_name: str,
+    account_email: str,
+    user_id: int, #not implemented as part of the account_model yet. there is no row for 'user_id'
+):
+    now = datetime.now(timezone.utc)
+    row = Account(
+	    account_id=account_id,
+	    account_name=account_name,
+	    account_email=account_email,
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    await write_audit_log(
+	    db=db,
+	    entity_type="account",
+	    entity_id=row.account_id,
+	    account_id=account_id,
+	    performed_by=user_id,
+	    action="create",
+	    details={
+	        "old": None,
+	        "new": {
+	            "account_id": account_id,
+	            "account_name": account_name,
+	            "account_email": account_email,
 	        },
-	        performed_at=now,
-	    )
+	    },
+	    performed_at=now,
+    )
+
     return row
 
 

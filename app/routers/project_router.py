@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.schemas.project import (
+from app.schemas.project_schema import (
     ProjectCreate,
     ProjectUpdate,
     ProjectResponse,

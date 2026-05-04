@@ -1,5 +1,4 @@
-#exceptions_schema
-
+#exceptions
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 

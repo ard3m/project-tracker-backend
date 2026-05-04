@@ -2,8 +2,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_db
-from app.schemas.account import (
+from app.db.database import get_db
+from app.schemas.account_schema import (
     AccountCreate,
     AccountUpdate,
     AccountResponse,

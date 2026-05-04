@@ -4,7 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.schemas.audit_log import AuditLogCreate, AuditLogResponse
+from app.schemas.audit_log_schema import 
+    AuditLogCreate, 
+    AuditLogResponse
 from app.services.audit_log_service import (
     write_audit_log,
     list_audit_logs,

@@ -1,6 +1,6 @@
 # app/models/auditlog.py
 from datetime import datetime
-from sqlalchemy import String, DateTime, ForeignKey, Integer, JSON, 
+from sqlalchemy import String, DateTime, ForeignKey, Integer, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.database import Base
 
